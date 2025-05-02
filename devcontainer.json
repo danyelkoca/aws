@@ -1,0 +1,22 @@
+{
+  "name": "AWS CLI Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "aws-cli": "latest"
+  },
+  "postCreateCommand": "aws --version",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "amazonwebservices.aws-toolkit-vscode"
+      ]
+    }
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,consistency=cached"
+  ],
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "AWS_AUTO_PROMPT": "on"
+  }
+}

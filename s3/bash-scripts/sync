@@ -1,0 +1,55 @@
+#! /usr/bin/bash
+
+echo "Syncing files to S3 bucket..."
+
+if [ "$#" -lt 1 ]; then
+    echo "This script requires at least one argument. You must provide a bucket name. Usage: $(basename "$0") <bucket-name> [region] [prefix]"
+    exit 1
+fi
+
+BUCKET_NAME="$1"
+REGION="${2:-ap-northeast-1}"
+PREFIX="${3:-files}"
+TEMP_DIR=$(mktemp -d)
+
+# Check if the bucket exists before proceeding
+echo "Checking if bucket $BUCKET_NAME exists..."
+if aws s3api head-bucket --bucket "$BUCKET_NAME" --region "$REGION" 2>/dev/null; then
+    echo "Creating 10 empty files in $TEMP_DIR..."
+    
+    # Create 10 empty files
+    for i in {1..10}; do
+        FILENAME="file_$i.txt"
+        FILEPATH="$TEMP_DIR/$FILENAME"
+        
+        # Create empty file
+        touch "$FILEPATH"
+        
+        echo "Created $FILENAME (0 bytes)"
+    done
+    
+    # Display directory tree
+    echo -e "\nTemporary directory structure:"
+    if command -v tree &> /dev/null; then
+        tree "$TEMP_DIR"
+    else
+        ls -la "$TEMP_DIR"
+    fi
+    
+    echo -e "\nSyncing files to bucket $BUCKET_NAME..."
+    
+    # Sync the files to S3
+    if [ -z "$PREFIX" ]; then
+        aws s3 sync "$TEMP_DIR" "s3://$BUCKET_NAME/" --region "$REGION"
+    else
+        aws s3 sync "$TEMP_DIR" "s3://$BUCKET_NAME/$PREFIX/" --region "$REGION"
+    fi
+    
+    echo "Successfully synced 10 empty files to S3 bucket $BUCKET_NAME in region $REGION."
+    
+    # Clean up temporary files
+    rm -rf "$TEMP_DIR"
+else
+    echo "Bucket $BUCKET_NAME does not exist in region $REGION."
+    exit 1
+fi

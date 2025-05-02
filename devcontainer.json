@@ -1,22 +1,15 @@
 {
-  "name": "AWS CLI Dev Container",
+  "name": "AWS CLI",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "features": {
-    "aws-cli": "latest"
-  },
-  "postCreateCommand": "aws --version",
+  "postCreateCommand": "curl \"https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip\" -o \"awscliv2.zip\" && unzip -q awscliv2.zip && sudo ./aws/install && rm -rf aws awscliv2.zip",
   "customizations": {
     "vscode": {
-      "extensions": [
-        "amazonwebservices.aws-toolkit-vscode"
-      ]
+      "extensions": ["amazonwebservices.aws-toolkit-vscode"]
     }
   },
-  "mounts": [
-    "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,consistency=cached"
-  ],
+  "mounts": ["source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"],
   "remoteUser": "vscode",
   "containerEnv": {
-    "AWS_AUTO_PROMPT": "on"
+    "AWS_CLI_AUTO_PROMPT": "on-partial"
   }
 }

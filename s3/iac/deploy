@@ -1,0 +1,7 @@
+#! /usr/bin/bash
+
+echo "Deploy S3 bucket via AWS CloudFormation..."
+
+STACK_NAME="s3-stack"
+
+aws cloudformation deploy --template-file template.yaml --stack-name $STACK_NAME --region ap-northeast-1 --no-cli-auto-prompt --no-execute-changeset

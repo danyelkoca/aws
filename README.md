@@ -22,5 +22,5 @@ The AWS Solutions Architect Professional certification validates advanced knowle
 This repository organizes code examples and notes for each major AWS service covered in the certification exam.
 
 ## Resources
-- [ExamPro Course](https://www.exampro.co/sap-c02)
 - [AWS Documentation](https://docs.aws.amazon.com/)
+- [Youtube Video](https://www.youtube.com/watch?v=hyEw7dQ9-JE)

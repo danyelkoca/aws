@@ -13,3 +13,5 @@
     "AWS_CLI_AUTO_PROMPT": "on-partial"
   }
 }
+// add terraform install commands here if needed
+// https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli

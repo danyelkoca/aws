@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Sample Amazon S3 bucket
 Resources:
-  S3Bucket:
+  MyS3Bucket:
     Type: 'AWS::S3::Bucket'
     # We dont need name as name is assigned automatically

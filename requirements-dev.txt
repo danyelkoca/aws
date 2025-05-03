@@ -1,0 +1,19 @@
+# requirements-dev.txt
+
+# Include base requirements from requirements.txt
+-r requirements.txt
+
+# Code formatting tool
+black
+
+# Linting tool for Python code
+flake8
+
+# Import sorting tool
+isort
+
+# Testing framework
+pytest
+
+# Pre-commit hooks manager
+pre-commit

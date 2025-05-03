@@ -5,7 +5,7 @@ import argparse
 def delete_bucket(bucket_name, region="ap-northeast-1"):
     """Delete an S3 bucket if it exists"""
     print(f"Attempting to delete bucket: {bucket_name}")
-    s3 = boto3.client("s3")
+    s3 = boto3.client("s3", region_name=region)
 
     try:
         # Check if bucket exists
@@ -13,6 +13,27 @@ def delete_bucket(bucket_name, region="ap-northeast-1"):
 
         # Delete all objects in the bucket first
         try:
+            # Delete all object versions (handles versioned buckets)
+            paginator = s3.get_paginator("list_object_versions")
+            for page in paginator.paginate(Bucket=bucket_name):
+                # Delete markers
+                if "DeleteMarkers" in page:
+                    for version in page["DeleteMarkers"]:
+                        s3.delete_object(
+                            Bucket=bucket_name,
+                            Key=version["Key"],
+                            VersionId=version["VersionId"],
+                        )
+                # Versions
+                if "Versions" in page:
+                    for version in page["Versions"]:
+                        s3.delete_object(
+                            Bucket=bucket_name,
+                            Key=version["Key"],
+                            VersionId=version["VersionId"],
+                        )
+
+            # Also delete objects without versions
             objects = s3.list_objects_v2(Bucket=bucket_name)
             if "Contents" in objects:
                 for obj in objects["Contents"]:

@@ -11,10 +11,17 @@ source .venv/bin/activate
 
 pip install -r requirements-dev.txt
 
+echo "[*] Adding automatic venv activation to .bashrc..."
+echo 'source /workspaces/aws/.venv/bin/activate' >> ~/.bashrc
+
 echo "[*] Making .venv/bin/python the default Python interpreter for VS Code..."
 mkdir -p .vscode
 echo '{
-  "python.defaultInterpreterPath": "/workspaces/aws/.venv/bin/python"
+  "python.defaultInterpreterPath": "/workspaces/aws/.venv/bin/python",
+  "terminal.integrated.env.linux": {
+    "VIRTUAL_ENV": "/workspaces/aws/.venv",
+    "PATH": "/workspaces/aws/.venv/bin:${env:PATH}"
+  }
 }' > .vscode/settings.json
 
 # AWS CLI

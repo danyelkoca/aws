@@ -8,7 +8,14 @@ sudo apt-get install -y python3-venv
 echo "[*] Setting up Python virtual environment..."
 python3 -m venv .venv
 source .venv/bin/activate
+
 pip install -r requirements-dev.txt
+
+echo "[*] Making .venv/bin/python the default Python interpreter for VS Code..."
+mkdir -p .vscode
+echo '{
+  "python.defaultInterpreterPath": "/workspaces/aws/.venv/bin/python"
+}' > .vscode/settings.json
 
 # AWS CLI
 echo "[*] Installing AWS CLI..."

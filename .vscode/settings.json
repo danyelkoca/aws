@@ -3,10 +3,5 @@
   "terminal.integrated.env.linux": {
     "VIRTUAL_ENV": "/workspaces/aws/.venv",
     "PATH": "/workspaces/aws/.venv/bin:${env:PATH}"
-  },
-  "extensions": {
-    "recommendations": [
-      "hashicorp.terraform"
-    ]
   }
 }

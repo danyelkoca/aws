@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "hashicorp.terraform",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml",
+        "ms-vscode.makefile-tools",
+        "vscode.json-language-features",
+        "shd101wyy.markdown-preview-enhanced"
+    ]
+}

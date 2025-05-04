@@ -7,6 +7,7 @@
         "redhat.vscode-yaml",
         "ms-vscode.makefile-tools",
         "vscode.json-language-features",
-        "shd101wyy.markdown-preview-enhanced"
+        "shd101wyy.markdown-preview-enhanced",
+        "pkief.material-icon-theme"
     ]
 }

@@ -1,0 +1,11 @@
+aws s3api get-object --bucket terraform-20250504042223431900000001 --key myfile.txt
+cat output.txt
+
+OR
+
+aws s3 cp s3://terraform-20250504042223431900000001/myfile.txt - && cat -
+
+terraform
+terraform init
+terraform plan
+terraform apply --auto-approve

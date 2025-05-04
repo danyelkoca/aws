@@ -2,13 +2,6 @@
   "name": "AWS CLI",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "postCreateCommand": "bash .devcontainer/setup.sh",
-  "customizations": {
-    "vscode": {
-      "extensions": ["amazonwebservices.aws-toolkit-vscode"]
-    }
-  },
-  "mounts": ["source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"],
-  "remoteUser": "vscode",
   "containerEnv": {
     "AWS_CLI_AUTO_PROMPT": "on-partial"
   }

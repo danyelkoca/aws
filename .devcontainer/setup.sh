@@ -2,6 +2,9 @@
 set -e
 
 # Python & virtual environment
+echo "[*] Installing python3-venv..."
+sudo apt-get update
+sudo apt-get install -y python3-venv
 echo "[*] Setting up Python virtual environment..."
 python3 -m venv .venv
 source .venv/bin/activate

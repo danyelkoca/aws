@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Danny Koca | Cloud & AI Engineer</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'M PLUS Rounded 1c', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #004080;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h1,
+        h2 {
+            color: #004080;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-badge {
+            background-color: #007acc;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        footer {
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Danny Koca</h1>
+        <p>Senior Data Scientist & Cloud Engineer based in Tokyo</p>
+    </header>
+    <main>
+        <section>
+            <h2>About Me</h2>
+            <p>I design and deploy scalable machine learning systems and cloud-native architectures. I specialize in
+                building secure, efficient, and cost-effective data platforms with a focus on business impact and
+                production-readiness.</p>
+            <p lang="ja">
+                スケーラブルな機械学習システムやクラウドネイティブなアーキテクチャを設計・構築しています。セキュアで効率的かつコスト効果の高いデータプラットフォームをビジネスインパクトと本番運用を重視して構築しています。
+            </p>
+        </section>
+        <section>
+            <h2>Core Skills</h2>
+            <div class="skills">
+                <div class="skill-badge">Python</div>
+                <div class="skill-badge">Kubernetes</div>
+                <div class="skill-badge">AWS</div>
+                <div class="skill-badge">Terraform</div>
+                <div class="skill-badge">Svelte</div>
+                <div class="skill-badge">Docker</div>
+                <div class="skill-badge">SQL</div>
+                <div class="skill-badge">CI/CD</div>
+                <div class="skill-badge">ML Ops</div>
+            </div>
+        </section>
+        <section>
+            <h2>Selected Experience</h2>
+            <p>At McKinsey & Company (QuantumBlack), I led the development of cloud-based AI tools for major clients in
+                Japan, spanning industries from medical devices to beverages. I also implemented infrastructure for
+                secure and scalable ML deployment pipelines using AWS, Kubernetes, and container orchestration.</p>
+            <p lang="ja">
+                マッキンゼー・アンド・カンパニー（QuantumBlack）では、日本国内の主要クライアント向けにクラウドベースのAIツールを開発しました。医療機器から飲料業界まで幅広い業種に対応し、AWSやKubernetesなどを活用したセキュアでスケーラブルなML導入基盤を実装しました。
+            </p>
+        </section>
+    </main>
+    <footer>
+        &copy; 2025 Danny Koca
+    </footer>
+    <script>
+        fetch("https://vpz3hiubzh.execute-api.ap-northeast-1.amazonaws.com/prod/", {
+            method: "POST"
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log("API response:", data);
+            })
+            .catch(error => {
+                console.error("API call failed:", error);
+            });
+    </script>
+</body>
+
+</html>

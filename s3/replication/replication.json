@@ -1,5 +1,5 @@
 {
-    "Role": "arn:aws:iam::497439481310:role/dannyk-s3-replication-role",
+    "Role": "arn:aws:iam::<account-id>:role/dannyk-s3-replication-role",
     "Rules": [
         {
             "ID": "ReplicateAll",

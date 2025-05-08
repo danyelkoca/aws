@@ -18,12 +18,39 @@ def delete_all_buckets():
             print(f"Attempting to delete bucket: {bucket_name}")
 
             try:
-                # Delete all objects in the bucket first
-                objects = s3.list_objects_v2(Bucket=bucket_name)
-                if "Contents" in objects:
-                    for obj in objects["Contents"]:
-                        s3.delete_object(Bucket=bucket_name, Key=obj["Key"])
-                    print(f"All objects in bucket {bucket_name} deleted successfully")
+                # Check if bucket is versioned
+                versioning = s3.get_bucket_versioning(Bucket=bucket_name)
+                is_versioned = versioning.get("Status") == "Enabled"
+
+                if is_versioned:
+                    # Delete all versions and delete markers
+                    paginator = s3.get_paginator("list_object_versions")
+                    for page in paginator.paginate(Bucket=bucket_name):
+                        # Delete versions
+                        if "Versions" in page:
+                            for version in page["Versions"]:
+                                s3.delete_object(
+                                    Bucket=bucket_name,
+                                    Key=version["Key"],
+                                    VersionId=version["VersionId"],
+                                )
+                        # Delete delete markers
+                        if "DeleteMarkers" in page:
+                            for marker in page["DeleteMarkers"]:
+                                s3.delete_object(
+                                    Bucket=bucket_name,
+                                    Key=marker["Key"],
+                                    VersionId=marker["VersionId"],
+                                )
+                else:
+                    # Delete all objects in non-versioned bucket
+                    paginator = s3.get_paginator("list_objects_v2")
+                    for page in paginator.paginate(Bucket=bucket_name):
+                        if "Contents" in page:
+                            for obj in page["Contents"]:
+                                s3.delete_object(Bucket=bucket_name, Key=obj["Key"])
+
+                print(f"All objects in bucket {bucket_name} deleted successfully")
 
                 # Delete the bucket
                 s3.delete_bucket(Bucket=bucket_name)

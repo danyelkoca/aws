@@ -3,5 +3,49 @@
   "terminal.integrated.env.linux": {
     "VIRTUAL_ENV": "/workspaces/aws/.venv",
     "PATH": "/workspaces/aws/.venv/bin:${env:PATH}"
-  }
+  },
+  "[markdown]": {
+    "editor.tabCompletion": "on",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": true,
+      "strings": true
+    },
+    "editor.suggestSelection": "first",
+    "editor.acceptSuggestionOnTab": true,
+    "editor.suggest.showKeywords": true,
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.showWords": true,
+    "editor.suggest.showFiles": true,
+    "editor.suggest.showFolders": true
+  },
+  "editor.suggest.showInlineDetails": true,
+  "editor.suggest.preview": true,
+  "editor.suggest.showMethods": true,
+  "editor.suggest.showFunctions": true,
+  "editor.suggest.showVariables": true,
+  "editor.suggest.showProperties": true,
+  "editor.suggest.showWords": true,
+  "editor.suggest.showColors": true,
+  "editor.suggest.showFiles": true,
+  "editor.suggest.showFolders": true,
+  "editor.suggest.showReferences": true,
+  "editor.suggest.showCustomtags": true,
+  "editor.suggest.showUsers": true,
+  "editor.suggest.showIssues": true,
+  "editor.suggest.showSnippets": true,
+  "editor.suggest.showKeywords": true,
+  "editor.suggest.showClasses": true,
+  "editor.suggest.showTypeParameters": true,
+  "editor.suggest.showConstants": true,
+  "editor.suggest.showEnums": true,
+  "editor.suggest.showEnumMembers": true,
+  "editor.suggest.showConstructors": true,
+  "editor.suggest.showDeprecated": true,
+  "editor.suggest.showValues": true,
+  "editor.suggest.showCustomcolors": true,
+  "editor.suggest.showReferences": true,
+  "editor.suggest.showCustomtags": true,
+  "editor.suggest.showUsers": true,
+  "editor.suggest.showIssues": true
 }

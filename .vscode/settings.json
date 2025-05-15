@@ -1,51 +1,71 @@
 {
-  "python.defaultInterpreterPath": "/workspaces/aws/.venv/bin/python",
-  "terminal.integrated.env.linux": {
-    "VIRTUAL_ENV": "/workspaces/aws/.venv",
-    "PATH": "/workspaces/aws/.venv/bin:${env:PATH}"
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "editor.formatOnSave": true,
+  "editor.fontSize": 14,
+  "editor.inlineSuggest.enabled": true,
+  "editor.renderControlCharacters": true,
+  "editor.minimap.enabled": false,
+  "editor.indentSize": "tabSize",
+  "debug.console.fontSize": 14,
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.inheritEnv": false,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "workbench.startupEditor": "none",
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.editor.enablePreview": false,
+  "github.copilot.enable": {
+    "*": true,
+    "markdown": true,
+    "plaintext": true,
+    "shellscript": true
   },
-  "[markdown]": {
-    "editor.tabCompletion": "on",
-    "editor.quickSuggestions": {
-      "other": true,
-      "comments": true,
-      "strings": true
-    },
-    "editor.suggestSelection": "first",
-    "editor.acceptSuggestionOnTab": true,
-    "editor.suggest.showKeywords": true,
-    "editor.suggest.showSnippets": true,
-    "editor.suggest.showWords": true,
-    "editor.suggest.showFiles": true,
-    "editor.suggest.showFolders": true
+  "python.linting.enabled": false,
+  "python.formatting.provider": "black",
+  "python.analysis.extraPaths": [
+    "src"
+  ],
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "emmet.includeLanguages": {
+    "javascript": "html"
   },
-  "editor.suggest.showInlineDetails": true,
-  "editor.suggest.preview": true,
-  "editor.suggest.showMethods": true,
-  "editor.suggest.showFunctions": true,
-  "editor.suggest.showVariables": true,
-  "editor.suggest.showProperties": true,
-  "editor.suggest.showWords": true,
-  "editor.suggest.showColors": true,
-  "editor.suggest.showFiles": true,
-  "editor.suggest.showFolders": true,
-  "editor.suggest.showReferences": true,
-  "editor.suggest.showCustomtags": true,
-  "editor.suggest.showUsers": true,
-  "editor.suggest.showIssues": true,
-  "editor.suggest.showSnippets": true,
-  "editor.suggest.showKeywords": true,
-  "editor.suggest.showClasses": true,
-  "editor.suggest.showTypeParameters": true,
-  "editor.suggest.showConstants": true,
-  "editor.suggest.showEnums": true,
-  "editor.suggest.showEnumMembers": true,
-  "editor.suggest.showConstructors": true,
-  "editor.suggest.showDeprecated": true,
-  "editor.suggest.showValues": true,
-  "editor.suggest.showCustomcolors": true,
-  "editor.suggest.showReferences": true,
-  "editor.suggest.showCustomtags": true,
-  "editor.suggest.showUsers": true,
-  "editor.suggest.showIssues": true
+  "emmet.triggerExpansionOnTab": true,
+  "prettier.printWidth": 150,
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[python]": {
+    "editor.formatOnType": true,
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "svipas.prettier-plus"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform"
+  },
+  "workbench.editorAssociations": {
+    "*.copilotmd": "vscode.markdown.preview.editor",
+    "{git,gitlens,git-graph}:/**/*.{md,csv,svg}": "default"
+  }
 }

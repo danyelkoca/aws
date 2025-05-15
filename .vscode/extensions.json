@@ -3,9 +3,6 @@
         "ms-python.python",
         "hashicorp.terraform",
         "esbenp.prettier-vscode",
-        "ms-azuretools.vscode-containers",
-        "redhat.vscode-yaml",
-        "ms-vscode.makefile-tools",
         "vscode.json-language-features",
         "shd101wyy.markdown-preview-enhanced",
         "pkief.material-icon-theme"

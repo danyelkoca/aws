@@ -14,7 +14,7 @@
   "explorer.confirmDragAndDrop": false,
   "workbench.startupEditor": "none",
   "workbench.colorTheme": "Default Dark+",
-  "workbench.iconTheme": "material-icon-theme",
+  "workbench.iconTheme": "vs-seti",
   "workbench.editor.enablePreview": false,
   "github.copilot.enable": {
     "*": true,

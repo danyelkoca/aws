@@ -3,4 +3,5 @@
 </script>
 
 <Navbar />
-<div>Home</div>
+
+<div>About</div>

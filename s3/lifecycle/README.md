@@ -8,10 +8,10 @@ cd s3/lifecycle
 
 ## Create S3 bucket
 
-Create a new S3 bucket named 'dannykbucket':
+Create a new S3 bucket named '<BUCKET_NAME>':
 
 ```bash
-aws s3 mb s3://dannykbucket
+aws s3 mb s3://<BUCKET_NAME>
 ```
 
 ## Configure lifecycle policy
@@ -48,7 +48,7 @@ echo '{
 2. Apply the lifecycle policy to the bucket:
 
 ```bash
-aws s3api put-bucket-lifecycle-configuration --bucket dannykbucket --lifecycle-configuration file://lifecycle.json
+aws s3api put-bucket-lifecycle-configuration --bucket <BUCKET_NAME> --lifecycle-configuration file://lifecycle.json
 ```
 
 This policy will:
@@ -70,7 +70,7 @@ This policy will:
 Check the lifecycle policy configuration:
 
 ```bash
-aws s3api get-bucket-lifecycle-configuration --bucket dannykbucket
+aws s3api get-bucket-lifecycle-configuration --bucket <BUCKET_NAME>
 ```
 
 ## Response
@@ -112,7 +112,7 @@ aws s3api get-bucket-lifecycle-configuration --bucket dannykbucket
 To delete the bucket and its contents:
 
 ```bash
-aws s3 rb s3://dannykbucket --force
+aws s3 rb s3://<BUCKET_NAME> --force
 ```
 
 > Note: The minimum storage duration for STANDARD_IA is 30 days, and for GLACIER is 90 days. You'll be charged for the minimum duration even if you delete objects earlier.

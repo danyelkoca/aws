@@ -12,14 +12,14 @@ provider "aws" {} # Configure the AWS provider
 
 # S3 Bucket
 # Create an S3 bucket named "<BUCKET_NAME>"
-resource "aws_s3_bucket" "dannykbucket" {
+resource "aws_s3_bucket" "example_bucket" {
   bucket = "<BUCKET_NAME>" # Name of the S3 bucket
 }
 
 # S3 Bucket Object
 # Add a hello.txt object to the S3 bucket
 resource "aws_s3_object" "hello_txt" {
-  bucket  = aws_s3_bucket.dannykbucket.bucket # Reference the S3 bucket
+  bucket  = aws_s3_bucket.example_bucket.bucket # Reference the S3 bucket
   key     = "hello.txt"                       # Name of the object
   content = "Hello, world!"                   # Content of the object
 }
@@ -29,7 +29,7 @@ resource "aws_s3_object" "hello_txt" {
 data "aws_iam_policy_document" "readonly_policy" {
   statement {
     actions   = ["s3:GetObject", "s3:ListBucket"]                                       # Actions allowed by the policy
-    resources = [aws_s3_bucket.dannykbucket.arn, "${aws_s3_bucket.dannykbucket.arn}/*"] # Resources the policy applies to
+    resources = [aws_s3_bucket.example_bucket.arn, "${aws_s3_bucket.example_bucket.arn}/*"] # Resources the policy applies to
   }
 }
 

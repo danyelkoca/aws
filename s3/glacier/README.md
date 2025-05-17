@@ -16,10 +16,10 @@ cd s3/glacier
 
 ## Step 2: Create an S3 Bucket
 
-Create a new S3 bucket named `dannykbucket`:
+Create a new S3 bucket named `<BUCKET_NAME>`:
 
 ```bash
-aws s3 mb s3://dannykbucket
+aws s3 mb s3://<BUCKET_NAME>
 ```
 
 ---
@@ -30,7 +30,7 @@ Create a file and upload it to the bucket with the Glacier storage class:
 
 ```bash
 echo 'Hello, World!' > hello.txt
-aws s3 cp hello.txt s3://dannykbucket --storage-class GLACIER
+aws s3 cp hello.txt s3://<BUCKET_NAME> --storage-class GLACIER
 ```
 
 > **Note:** Files stored in S3 Glacier are not immediately accessible. You need to restore them before downloading.
@@ -42,13 +42,13 @@ aws s3 cp hello.txt s3://dannykbucket --storage-class GLACIER
 Try downloading the file from the bucket:
 
 ```bash
-aws s3 cp s3://dannykbucket/hello.txt hello.txt
+aws s3 cp s3://<BUCKET_NAME>/hello.txt hello.txt
 ```
 
 ### Output:
 
 ```
-warning: Skipping file s3://dannykbucket/hello.txt. Object is of storage class GLACIER. Unable to perform download operations on GLACIER objects. You must restore the object to be able to perform the operation. See aws s3 download help for additional parameter options to ignore or force these transfers.
+warning: Skipping file s3://<BUCKET_NAME>/hello.txt. Object is of storage class GLACIER. Unable to perform download operations on GLACIER objects. You must restore the object to be able to perform the operation. See aws s3 download help for additional parameter options to ignore or force these transfers.
 ```
 
 ---
@@ -58,7 +58,7 @@ warning: Skipping file s3://dannykbucket/hello.txt. Object is of storage class G
 Initiate a restore request for the file:
 
 ```bash
-aws s3api restore-object --bucket dannykbucket --key hello.txt --restore-request Days=1
+aws s3api restore-object --bucket <BUCKET_NAME> --key hello.txt --restore-request Days=1
 ```
 
 > **Note:** The standard tier takes 3-5 hours to restore.
@@ -74,7 +74,7 @@ aws s3api restore-object --bucket dannykbucket --key hello.txt --restore-request
 Check the status of the restoration:
 
 ```bash
-aws s3api head-object --bucket dannykbucket --key hello.txt
+aws s3api head-object --bucket <BUCKET_NAME> --key hello.txt
 ```
 
 ### Output:
@@ -100,7 +100,7 @@ aws s3api head-object --bucket dannykbucket --key hello.txt
 Use the expedited tier to restore the file faster (1-5 minutes):
 
 ```bash
-aws s3api restore-object --bucket dannykbucket --key hello.txt --restore-request Days=1,GlacierJobParameters={Tier=Expedited}
+aws s3api restore-object --bucket <BUCKET_NAME> --key hello.txt --restore-request Days=1,GlacierJobParameters={Tier=Expedited}
 ```
 
 ### Screenshot:
@@ -114,7 +114,7 @@ aws s3api restore-object --bucket dannykbucket --key hello.txt --restore-request
 Once the file is restored, download it:
 
 ```bash
-aws s3 cp s3://dannykbucket/hello.txt hello_restored.txt
+aws s3 cp s3://<BUCKET_NAME>/hello.txt hello_restored.txt
 ```
 
 ### Output:

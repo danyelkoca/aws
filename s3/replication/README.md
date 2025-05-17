@@ -8,10 +8,10 @@ This guide demonstrates how to set up cross-region replication between two S3 bu
 
 ```bash
 # Create source bucket (default region)
-aws s3 mb s3://dannyk-source-bucket
+aws s3 mb s3://<SOURCE_BUCKET_NAME>
 
 # Create destination bucket in us-east-1
-aws s3 mb s3://dannyk-destination-bucket --region us-east-1
+aws s3 mb s3://<DESTINATION_BUCKET_NAME> --region us-east-1
 ```
 
 ### 2. Enable Versioning
@@ -19,12 +19,12 @@ aws s3 mb s3://dannyk-destination-bucket --region us-east-1
 ```bash
 # Enable versioning on both buckets
 aws s3api put-bucket-versioning \
-    --bucket dannyk-source-bucket \
+    --bucket <SOURCE_BUCKET_NAME> \
     --versioning-configuration Status=Enabled
 
 aws s3api put-bucket-versioning \
-    --bucket dannyk-destination-bucket \
-    --versioning-configuration Status=Enabled
+    --bucket <DESTINATION_BUCKET_NAME> \
+    --versioning-configuration Status=Enabled --region us-east-1
 ```
 
 ### 3. Set Up IAM Role and Policy
@@ -32,25 +32,25 @@ aws s3api put-bucket-versioning \
 ```bash
 # Create IAM Policy
 aws iam create-policy \
-    --policy-name dannyk-s3-replication-policy \
+    --policy-name <REPLICATION_POLICY_NAME> \
     --policy-document file://policy.json
 
 # Create IAM Role
 aws iam create-role \
-    --role-name dannyk-s3-replication-role \
+    --role-name <REPLICATION_ROLE_NAME> \
     --assume-role-policy-document file://trust.json
 
 # Attach Policy to Role
 aws iam attach-role-policy \
-    --role-name dannyk-s3-replication-role \
-    --policy-arn arn:aws:iam::<account-id>:policy/dannyk-s3-replication-policy
+    --role-name <REPLICATION_ROLE_NAME> \
+    --policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/<REPLICATION_POLICY_NAME>
 ```
 
 ### 4. Configure Replication
 
 ```bash
 aws s3api put-bucket-replication \
-    --bucket dannyk-source-bucket \
+    --bucket <SOURCE_BUCKET_NAME> \
     --replication-configuration file://replication.json
 ```
 
@@ -62,10 +62,10 @@ Verify in AWS Console: Source bucket > Management tab > Replication rules
 ```bash
 # Create and upload test file
 echo "test" > test.txt
-aws s3 cp test.txt s3://dannyk-source-bucket/test.txt
+aws s3 cp test.txt s3://<SOURCE_BUCKET_NAME>/test.txt
 
 # Verify in destination bucket
-aws s3 ls s3://dannyk-destination-bucket
+aws s3 ls s3://<DESTINATION_BUCKET_NAME>
 ```
 
 The file should appear in the destination bucket after a few moments.

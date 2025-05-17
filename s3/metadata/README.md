@@ -5,7 +5,7 @@ This guide demonstrates how to create S3 buckets, upload objects, and work with 
 ## Create a Bucket
 
 ```bash
-aws s3 mb s3://dannykbucket
+aws s3 mb s3://<BUCKET_NAME>
 ```
 
 ## Prepare a Sample File
@@ -18,7 +18,7 @@ echo "Hello Mars" > hello.txt
 
 ```bash
 aws s3api put-object \
-    --bucket dannykbucket \
+    --bucket <BUCKET_NAME> \
     --key hello.txt \
     --body hello.txt
 ```
@@ -27,7 +27,7 @@ aws s3api put-object \
 
 ```bash
 aws s3api put-object \
-    --bucket dannykbucket \
+    --bucket <BUCKET_NAME> \
     --key hellowithmetadata.txt \
     --body hello.txt \
     --metadata planet=Mars
@@ -37,7 +37,7 @@ aws s3api put-object \
 
 ```bash
 aws s3api head-object \
-    --bucket dannykbucket \
+    --bucket <BUCKET_NAME> \
     --key hellowithmetadata.txt
 ```
 

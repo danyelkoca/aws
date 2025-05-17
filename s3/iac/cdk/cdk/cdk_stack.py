@@ -10,7 +10,7 @@ from aws_cdk import aws_iam as iam
 # Note
 # Before running cdk bootstrap/ deploy, make sure to grant admin access to your user
 # 1.	Go to IAM in AWS Console
-# 2.	Click Users → Select user danyelkoca
+# 2.	Click Users → Select user <USERNAME>
 # 3.	Go to the Permissions tab
 # 4.	Click Add permissions
 # 5.	Choose Attach policies directly

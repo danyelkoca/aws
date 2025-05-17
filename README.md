@@ -107,3 +107,9 @@ The project includes several development tools:
 
 - [AWS Documentation](https://docs.aws.amazon.com/)
 - [Youtube Video](https://www.youtube.com/watch?v=hyEw7dQ9-JE)
+
+## Enable S3 Auto prompt
+
+```bash
+export AWS_CLI_AUTO_PROMPT=on-partial
+```

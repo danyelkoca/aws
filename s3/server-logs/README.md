@@ -17,6 +17,7 @@ This guide demonstrates how to enable server access logging from a source bucket
   - [9.2 Run Queries](#92-run-queries)
   - [9.3 Sync Query Results Locally](#93-sync-query-results-locally)
   - [9.4 Optional: Query Specific Fields](#94-optional-query-specific-fields)
+- [Step 10: Cleanup Resources (Avoid Charges)](#step-10-cleanup-resources-avoid-charges)
 
 ## Step 1: Create Source and Destination Buckets
 
@@ -216,4 +217,28 @@ aws athena start-query-execution \
   --query-string "SELECT bucket_owner, bucket, requester, operation, key FROM s3_logs.s3_server_logs WHERE bucket = '<SOURCE_BUCKET>' LIMIT 10;" \
   --query-execution-context Database=s3_logs \
   --result-configuration OutputLocation=s3://<QUERY_RESULT_BUCKET>/
+```
+
+## Step 10: Cleanup Resources (Avoid Charges)
+
+After you're done experimenting, you may want to remove all resources to avoid unnecessary charges.
+
+```bash
+# Drop the Athena table
+aws athena start-query-execution \
+  --query-string "DROP TABLE IF EXISTS s3_logs.s3_server_logs;" \
+  --query-execution-context Database=s3_logs \
+  --result-configuration OutputLocation=s3://<QUERY_RESULT_BUCKET>/
+```
+
+```bash
+# Drop the Athena database (optional)
+aws athena start-query-execution \
+  --query-string "DROP DATABASE IF EXISTS s3_logs;" \
+  --result-configuration OutputLocation=s3://<QUERY_RESULT_BUCKET>/
+```
+
+```bash
+# Delete the Athena query result bucket and its contents
+aws s3 rb s3://<QUERY_RESULT_BUCKET> --force
 ```

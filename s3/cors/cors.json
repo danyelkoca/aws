@@ -11,7 +11,7 @@
                 "DELETE"
             ],
             "AllowedOrigins": [
-                "https://vpz3hiubzh.execute-api.ap-northeast-1.amazonaws.com"
+                "https://<API_GATEWAY_ID>.execute-api.<REGION>.amazonaws.com"
             ],
             "ExposeHeaders": [],
             "MaxAgeSeconds": 3000

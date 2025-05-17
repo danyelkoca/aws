@@ -8,7 +8,7 @@ if [ "$#" -lt 1 ]; then
 fi
 
 BUCKET_NAME="$1"
-REGION="${2:-ap-northeast-1}"
+REGION="${2:-<DEFAULT_REGION>}"
 
 # Check if the bucket exists before proceeding
 echo "Checking if bucket $BUCKET_NAME exists..."

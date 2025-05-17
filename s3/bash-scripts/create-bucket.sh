@@ -8,7 +8,7 @@ if [ "$#" -lt 1 ]; then
 fi
 
 BUCKET_NAME="$1"
-REGION="${2:-ap-northeast-1}"
+REGION="${2:-<DEFAULT_REGION>}"
 
 # Check if bucket already exists
 if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then

@@ -21,11 +21,11 @@ if __name__ == "__main__":
 ## Returns
 # Buckets: [
 #     {
-#         "Name": "bucket",
+#         "Name": "<BUCKET_NAME_1>",
 #         "CreationDate": datetime.datetime(2025, 5, 17, 8, 52, 53, tzinfo=tzutc()),
 #     },
 #     {
-#         "Name": "my-bucket",
+#         "Name": "<BUCKET_NAME_2>",
 #         "CreationDate": datetime.datetime(2025, 5, 17, 8, 51, 18, tzinfo=tzutc()),
 #     },
 # ]

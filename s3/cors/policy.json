@@ -8,7 +8,7 @@
             "Action": [
                 "s3:GetObject"
             ],
-            "Resource": "arn:aws:s3:::dannykbucket/*"
+            "Resource": "arn:aws:s3:::<BUCKET_NAME>/*"
         }
     ]
 }

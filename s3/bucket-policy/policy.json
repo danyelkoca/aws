@@ -5,7 +5,7 @@
             "Sid": "AllowListGetPutFromAccountRoot",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "ROOT USER ARN"
+                "AWS": "<ROOT_USER_ARN>"
             },
             "Action": [
                 "s3:ListBucket",
@@ -13,8 +13,8 @@
                 "s3:PutObject"
             ],
             "Resource": [
-                "arn:aws:s3:::dannykbucket",
-                "arn:aws:s3:::dannykbucket/*"
+                "arn:aws:s3:::<BUCKET_NAME>",
+                "arn:aws:s3:::<BUCKET_NAME>/*"
             ]
         }
     ]

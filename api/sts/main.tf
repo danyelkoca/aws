@@ -11,9 +11,9 @@ terraform {
 provider "aws" {} # Configure the AWS provider
 
 # S3 Bucket
-# Create an S3 bucket named "dannykbucket"
+# Create an S3 bucket named "<BUCKET_NAME>"
 resource "aws_s3_bucket" "dannykbucket" {
-  bucket = "dannykbucket" # Name of the S3 bucket
+  bucket = "<BUCKET_NAME>" # Name of the S3 bucket
 }
 
 # S3 Bucket Object
@@ -43,7 +43,7 @@ resource "aws_iam_policy" "readonly_policy" {
 # IAM User (No Direct Permissions)
 # Create an IAM user without any direct permissions
 resource "aws_iam_user" "no_permissions_user" {
-  name = "no-permissions-user" # Name of the IAM user
+  name = "<IAM_USER_NAME>" # Name of the IAM user
 }
 
 # IAM Role to Be Assumed
@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "sts_assume_role_policy" {
 
 # Create the IAM role which can be assumed by the IAM user
 resource "aws_iam_role" "sts_role" {
-  name               = "sts_role"                                               # Name of the IAM role
+  name               = "<IAM_ROLE_NAME>"                                        # Name of the IAM role
   assume_role_policy = data.aws_iam_policy_document.sts_assume_role_policy.json # Policy allowing the user to assume this role
 }
 
@@ -125,11 +125,11 @@ output "no_permissions_user_secret_key" {
 # Provide the values from Step 1 when prompted
 
 # Step 3: Attempting to access the S3 bucket directly will fail (as expected)
-# aws s3 ls s3://dannykbucket --profile no-permissions-user
+# aws s3 ls s3://<BUCKET_NAME> --profile no-permissions-user
 
 # Step 4: Assume the role to gain temporary credentials
 # aws sts assume-role \
-#   --role-arn arn:aws:iam::<ACCOUNT_ID>:role/sts_role \
+#   --role-arn arn:aws:iam::<ACCOUNT_ID>:role/<IAM_ROLE_NAME> \
 #   --role-session-name test-session \
 #   --profile no-permissions-user
 
@@ -142,7 +142,7 @@ output "no_permissions_user_secret_key" {
 #     ...
 #   },
 #   "AssumedRoleUser": {
-#     "Arn": "arn:aws:sts::<ACCOUNT_ID>:assumed-role/sts_role/test-session"
+#     "Arn": "arn:aws:sts::<ACCOUNT_ID>:assumed-role/<IAM_ROLE_NAME>/test-session"
 #   }
 # }
 
@@ -154,4 +154,4 @@ output "no_permissions_user_secret_key" {
 # aws configure set aws_session_token "<SESSION_TOKEN>" --profile assumed-role-user
 
 # Step 7: Access the S3 bucket using the assumed role profile
-# aws s3 ls s3://dannykbucket --profile assumed-role-user
+# aws s3 ls s3://<BUCKET_NAME> --profile assumed-role-user

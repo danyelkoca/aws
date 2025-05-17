@@ -13,7 +13,7 @@ provider "aws" {}
 
 # Primary S3 bucket for www subdomain
 resource "aws_s3_bucket" "www" {
-  bucket = "www.dannykweb.com"
+  bucket = "www.<DOMAIN_NAME>"
 }
 
 resource "aws_s3_bucket_public_access_block" "www" {
@@ -89,7 +89,7 @@ output "www_website_endpoint" {
 
 # S3 bucket for naked domain (without www)
 resource "aws_s3_bucket" "naked" {
-  bucket = "dannykweb.com"
+  bucket = "<DOMAIN_NAME>"
 }
 
 # Configure naked domain bucket to redirect to www

@@ -31,7 +31,7 @@ WITH SERDEPROPERTIES (
   'input.regex' = '(\\S+) (\\S+) \\[([^\\]]+)\\] (\\S+) (\\S+) (\\S+) (\\S+) (\\S+) \"([^\"]*)\" (\\S+) (\\S+) (\\S+) (\\S+) (\\S+) (\\S+) \"([^\"]*)\" \"([^\"]*)\" (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*)'
 )
 STORED AS TEXTFILE
-LOCATION 's3://server-logs-destination-bucket-0988/logs/'
+LOCATION 's3://<LOG_BUCKET_NAME>/logs/'
 TBLPROPERTIES (
   'skip.header.line.count' = '0'
 );

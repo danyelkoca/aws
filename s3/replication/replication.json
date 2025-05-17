@@ -1,12 +1,12 @@
 {
-    "Role": "arn:aws:iam::<account-id>:role/dannyk-s3-replication-role",
+    "Role": "arn:aws:iam::<ACCOUNT_ID>:role/<REPLICATION_ROLE_NAME>",
     "Rules": [
         {
             "ID": "ReplicateAll",
             "Prefix": "",
             "Status": "Enabled",
             "Destination": {
-                "Bucket": "arn:aws:s3:::dannyk-destination-bucket",
+                "Bucket": "arn:aws:s3:::<DESTINATION_BUCKET_NAME>",
                 "StorageClass": "STANDARD"
             }
         }

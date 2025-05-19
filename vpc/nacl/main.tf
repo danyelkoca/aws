@@ -8,15 +8,15 @@
 # Run the following command to create the key and save it locally:
 #
 #   aws ec2 create-key-pair \
-#     --key-name MainKey \
+#     --key-name <your-key> \
 #     --query 'KeyMaterial' \
-#     --output text > MainKey.pem
+#     --output text > <your-key>.pem
 #
 # Then secure the key:
 #
-#   chmod 400 MainKey.pem
+#   chmod 400 <your-key>.pem
 #
-# Terraform will reference this key by name ("MainKey") when launching the EC2 instance.
+# Terraform will reference this key by name ("<your-key>") when launching the EC2 instance.
 # -----------------------------------------------------------------------------
 ##############################################################################
 
@@ -222,19 +222,25 @@ resource "aws_security_group" "main_sg" {
 # Uses the security group for SSH access and inherits NACL rules from the subnet.
 # -----------------------------------------------------------------------------
 resource "aws_instance" "main_instance" {
+  # AMI: Amazon Linux 2023 (uses dnf instead of yum)
   ami                    = "ami-0c1638aa346a43fe8"         # Amazon Linux 2023 AMI ID for ap-northeast-1
   instance_type          = "t2.micro"                      # Instance type eligible for free tier
   subnet_id              = aws_subnet.main_subnet.id       # Launch in our public subnet
   vpc_security_group_ids = [aws_security_group.main_sg.id] # Apply our security group
-  key_name               = "MainKey"                       # Use the pre-existing EC2 key pair for SSH access
+  key_name               = "<your-key>"                       # Use the pre-existing EC2 key pair for SSH access
 
   user_data = <<-EOF
-              #!/bin/bash
-              yum update -y  # Update all packages
-              yum install -y nginx  # Install nginx web server
-              systemctl start nginx  # Start nginx service
-              systemctl enable nginx  # Enable nginx to start on boot
-            EOF
+             #!/bin/bash
+              # Update packages
+              dnf update -y
+
+              # Install nginx
+              dnf install -y nginx
+
+              # Enable and start nginx service
+              systemctl enable nginx
+              systemctl start nginx
+              EOF
 
   tags = {
     Name = "Main-Instance" # Name tag for the instance
@@ -249,9 +255,9 @@ resource "aws_instance" "main_instance" {
 #
 # - SSH (port 22) access is configured.
 #   You can connect to the EC2 instance securely from your machine:
-#     1. Ensure you have the EC2 private key file named 'MainKey.pem'.
+#     1. Ensure you have the EC2 private key file named '<your-key>.pem'.
 #     2. From your terminal or IDE, run:
-#        ssh -i MainKey.pem ec2-user@<public-ip>
+#        ssh -i <your-key>.pem ec2-user@<public-ip>
 #     3. Replace <public-ip> with the URL shown in the Terraform output.
 # -----------------------------------------------------------------------------
 
@@ -264,7 +270,7 @@ output "main_ec2_public_url" {
 # Output: SSH command to connect to the EC2 instance
 # -----------------------------------------------------------------------------
 output "main_ec2_ssh_command" {
-  value       = "ssh -i MainKey.pem ec2-user@${aws_instance.main_instance.public_ip}"
+  value       = "ssh -i <your-key>.pem ec2-user@${aws_instance.main_instance.public_ip}"
   description = "SSH command to connect to the EC2 instance"
 }
 
@@ -290,15 +296,15 @@ output "main_ec2_ssh_command" {
 #
 # Step 1: Generate the key pair via AWS CLI
 #   aws ec2 create-key-pair \
-#     --key-name MainKey \
+#     --key-name <your-key> \
 #     --query 'KeyMaterial' \
-#     --output text > MainKey.pem
+#     --output text > <your-key>.pem
 #
 # Step 2: Restrict permissions on the key file
-#   chmod 400 MainKey.pem
+#   chmod 400 <your-key>.pem
 #
 # Step 3: Connect to the EC2 instance via SSH
-#   ssh -i MainKey.pem ec2-user@<public-ip>
+#   ssh -i <your-key>.pem ec2-user@<public-ip>
 #   (Replace <public-ip> with the IP from Terraform output)
 #
 # This setup assumes the key pair was created separately and registered with AWS.

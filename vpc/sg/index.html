@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Security Group Configuration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #2c3e50;
+        }
+
+        ul {
+            margin-left: 20px;
+            padding-left: 20px;
+        }
+
+        p,
+        li {
+            color: #333;
+        }
+
+        strong {
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>AWS Security Group Configuration</h1>
+    <p>Security Groups (SGs) act as virtual firewalls for controlling inbound and outbound traffic to AWS resources,
+        most commonly EC2 instances.</p>
+    <ul>
+        <li>SGs are <strong>stateful</strong>: return traffic is automatically allowed.</li>
+        <li>SGs must always be associated with a VPC.</li>
+        <li>This example allows:
+            <ul>
+                <li>SSH access (port 22) from a specific IP.</li>
+                <li>HTTP access (port 80) from anywhere.</li>
+                <li>All outbound traffic.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Security Groups vs. Network ACLs (NACLs)</h2>
+    <h3>Security Groups (SGs):</h3>
+    <ul>
+        <li>Operate at the instance level (attached to EC2 instances).</li>
+        <li>Stateful: return traffic is automatically allowed.</li>
+        <li>Default behavior: deny all inbound traffic, allow all outbound traffic.</li>
+        <li>Evaluate all rules together; if no rule matches, traffic is denied.</li>
+    </ul>
+
+    <h3>Network ACLs (NACLs):</h3>
+    <ul>
+        <li>Operate at the subnet level (attached to subnets).</li>
+        <li>Stateless: return traffic must be explicitly allowed.</li>
+        <li>Default behavior: allow nothing unless explicitly allowed.</li>
+        <li>Evaluate rules in numbered order; first match wins (allow or deny).</li>
+    </ul>
+
+    <p><strong>Note:</strong> SGs are generally easier to manage for EC2 security. NACLs provide broader control across
+        entire subnets and can be used to implement additional layers of network security.</p>
+</body>
+
+</html>

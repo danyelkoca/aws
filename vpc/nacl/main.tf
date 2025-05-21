@@ -165,7 +165,7 @@ resource "aws_network_acl_rule" "main_allow_egress_all" {
 
 # -----------------------------------------------------------------------------
 # NACL Association: Associates the custom NACL with the subnet.
-# Only one NACL can be associated per subnet at a time.
+# Important! Only one NACL can be associated per subnet at a time.
 # -----------------------------------------------------------------------------
 resource "aws_network_acl_association" "main_acl_assoc" {
   subnet_id      = aws_subnet.main_subnet.id

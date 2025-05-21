@@ -1,3 +1,5 @@
+# WIP
+
 # Configure the AWS Provider to use Tokyo region
 provider "aws" {
   region = "ap-northeast-1"
@@ -76,7 +78,7 @@ resource "aws_security_group" "web" {
 
 # Launch a basic EC2 instance with a public IP and simple HTTP server
 resource "aws_instance" "web" {
-  ami                         = "ami-0f9ae750e8274075b" # Amazon Linux 2 AMI (ap-northeast-1)
+  ami                         = "ami-0c1638aa346a43fe8" # Amazon 2023 AMI in Tokyo
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.main.id
   vpc_security_group_ids      = [aws_security_group.web.id]
@@ -84,10 +86,27 @@ resource "aws_instance" "web" {
 
   user_data = <<-EOF
               #!/bin/bash
-              echo "<h1>Hello from EC2</h1>" > /var/www/html/index.html
-              yum install -y httpd
-              systemctl start httpd
-              systemctl enable httpd
+              # Update packages
+              dnf update -y
+
+              # Install nginx
+              dnf install -y nginx
+
+              # Enable and start nginx service
+              systemctl enable nginx
+              systemctl start nginx
+
+              # Create a simple static HTML page
+              echo '<!DOCTYPE html>
+              <html>
+              <head>
+                <title>Welcome</title>
+              </head>
+              <body>
+                <h1>Welcome to Country Block EC2 Instance</h1>
+                <p>This is a simple static HTML page served by Nginx.</p>
+              </body>
+              </html>' > /usr/share/nginx/html/index.html
               EOF
 
   tags = {

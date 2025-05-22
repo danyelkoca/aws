@@ -17,3 +17,6 @@ pytest
 
 # Pre-commit hooks manager
 pre-commit
+
+# to create favicon.ico
+pillow==11.2.1

@@ -195,3 +195,15 @@ output "instance_private_ip" {
 #    aws ssm start-session --target <target-instance-id> --region ap-northeast-1
 
 # 4. Use commands like "ls" to verify that the endpoint is working.
+
+
+# Elastic Network Interfaces (ENIs) in the context of this deployment:
+
+# 1. ENIs are virtual network interfaces that can be attached to EC2 instances or VPC endpoints.
+# 2. For the VPC endpoints (Systems Manager, SSM Messages, EC2 Messages), ENIs are automatically created in the private subnet.
+#    - These ENIs allow the endpoints to communicate with the respective AWS services over the private network.
+#    - Each ENI is associated with a private IP address from the subnet's CIDR block.
+# 3. The security group attached to the VPC endpoints (via ENIs) ensures that only HTTPS traffic (port 443) is allowed within the VPC.
+# 4. The EC2 instance in the private subnet communicates with the VPC endpoints through these ENIs, enabling secure access to Systems Manager services without requiring internet access.
+# 5. ENIs are managed by AWS for the VPC endpoints, and their lifecycle is tied to the lifecycle of the endpoints.
+

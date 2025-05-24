@@ -53,16 +53,28 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
 }
 
-# Private subnet
+# Private subnet - No internet access
+# This subnet does not have a route to an Internet Gateway (IGW) or NAT Gateway.
+# Instances in this subnet can only access resources within the VPC or through VPC endpoints.
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "ap-northeast-1a"
+
+  tags = {
+    Name = "private-subnet"
+  }
 }
 
-# Route table
+# Private Route Table - No routes to the internet
+# This route table only contains local VPC routes and routes to VPC endpoints.
+# There are no routes to an Internet Gateway (IGW) or NAT Gateway, ensuring the subnet remains private.
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "private-rt"
+  }
 }
 
 resource "aws_route_table_association" "private" {

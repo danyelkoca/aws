@@ -1,85 +1,79 @@
 # -----------------------------------------------------------------------------
-# VPC with Private-Only Access Pattern
+# VPC with Interface Endpoint
 # -----------------------------------------------------------------------------
-# This configuration demonstrates a security pattern where EC2 instances:
-# 1. Have NO internet access (no IGW, no NAT gateway)
-# 2. Can still access AWS S3 service through VPC endpoints
-# 3. Remain completely isolated from the public internet
-# This is ideal for highly secure workloads that need AWS services but no internet
+# Interface Endpoints allow private access to AWS services without Internet
+# 
+# Costs:
+# - $0.01 per endpoint per AZ per hour
+# - Data processing charges per GB
+#
+# Most commonly used with:
+# 1. Systems Manager (SSM) Suite:
+#    - ssm: Main service endpoint
+#    - ssmmessages: Session Manager
+#    - ec2messages: SSM communication
+#
+# 2. Container Services:
+#    - ecr.api: Container Registry API
+#    - ecr.dkr: Docker Registry
+#    - ecs: Container Service
+#
+# 3. Security Services:
+#    - secrets manager: Store secrets
+#    - kms: Key Management
+#    - sts: Security Token Service
+#
+# 4. Monitoring:
+#    - logs: CloudWatch Logs
+#    - monitoring: CloudWatch Metrics
+#
+# Interface vs Gateway Endpoints:
+# Interface:                    | Gateway:
+# - Works with most services   | - Only S3 and DynamoDB
+# - Costs money               | - Free
+# - Uses ENIs                 | - Uses route tables
+# - Works across VPC peering  | - VPC-only
+# - Needs security groups     | - No security groups needed
+# - Multiple AZ support       | - Highly available by default
 
+
+
+## THIS PARTICULAR EXAMPLE IS FOR SECRETS MANAGER
+# -----------------------------------------------------------------------------
+# Minimal VPC with Interface Endpoint for Secrets Manager
+# -----------------------------------------------------------------------------
 provider "aws" {
   region = "ap-northeast-1"
 }
 
-# VPC with DNS support enabled - required for VPC endpoints to work
+# VPC with DNS support (required for endpoints)
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true  # Required for endpoint private DNS
-  enable_dns_support   = true  # Required for endpoint DNS resolution
-
-  tags = {
-    Name = "endpoint-vpc"
-  }
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 }
 
-# Private subnet with NO internet access
-# -----------------------------------------------------------------------------
-# This subnet has:
-# - No route to an Internet Gateway (IGW)
-# - No route to a NAT Gateway
-# - Only local VPC routes and VPC endpoint routes
-# This means instances in this subnet:
-# - Cannot access the internet
-# - Cannot be accessed from the internet
-# - Can only access S3 through the VPC endpoint
+# Private subnet
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "ap-northeast-1a"
-
-  tags = {
-    Name = "private-subnet"
-  }
 }
 
-# Private Route Table
-# -----------------------------------------------------------------------------
-# This route table only has:
-# 1. Local VPC routes (automatically added)
-# 2. S3 endpoint route (automatically added by the Gateway endpoint)
-# NO routes to internet via IGW or NAT = true privacy
+# Route table
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
-
-  tags = {
-    Name = "private-rt"
-  }
 }
 
-# Associate private subnet with route table
 resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private.id
   route_table_id = aws_route_table.private.id
 }
 
-# Security Group for VPC Endpoint
-# -----------------------------------------------------------------------------
-# This security group controls access to the VPC endpoint:
-# - Allows HTTPS (443) from within the VPC only
-# - Required because Interface endpoints are ENIs (Elastic Network Interfaces)
-# - Gateway endpoints don't need security groups
-resource "aws_security_group" "endpoint_sg" {
-  name        = "endpoint-sg"
-  description = "Security group for S3 VPC endpoint"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]  # Only allow access from within VPC
-  }
-
+# Security group
+resource "aws_security_group" "sg" {
+  vpc_id = aws_vpc.main.id
+  
   egress {
     from_port   = 0
     to_port     = 0
@@ -87,115 +81,91 @@ resource "aws_security_group" "endpoint_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "endpoint-sg"
+  ingress {
+    from_port   = 443        # Allow HTTPS to the endpoint ENI
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]  # Only traffic from inside VPC
   }
 }
 
-# Gateway VPC Endpoint for S3
-# -----------------------------------------------------------------------------
-# Gateway endpoints:
-# 1. Are required before creating Interface endpoints with private DNS
-# 2. Are free and provide access through AWS backbone network
-# 3. Work by adding routes to route tables
-# 4. Only support S3 and DynamoDB
-resource "aws_vpc_endpoint" "s3_gateway" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.ap-northeast-1.s3"
-  vpc_endpoint_type = "Gateway"
-  route_table_ids   = [aws_route_table.private.id]
-
-  tags = {
-    Name = "s3-gateway-endpoint"
-  }
-}
-
-# Interface VPC Endpoint for S3
-# -----------------------------------------------------------------------------
-# This creates an ENI in your subnet that:
-# 1. Has a private IP address
-# 2. Responds to DNS queries for S3
-# 3. Handles S3 API requests
-# 
-# When private_dns_enabled = true:
-# - Standard S3 URLs resolve to endpoint's private IP
-# - No special configuration needed in applications
-# - AWS CLI and SDKs work transparently
-resource "aws_vpc_endpoint" "s3_interface" {
+# Secrets Manager endpoint
+resource "aws_vpc_endpoint" "secretsmanager" {
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.ap-northeast-1.s3"
+  service_name        = "com.amazonaws.ap-northeast-1.secretsmanager"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = [aws_subnet.private.id]
-  security_group_ids  = [aws_security_group.endpoint_sg.id]
-  private_dns_enabled = true  # Makes S3 accessible via standard DNS names
-
-  tags = {
-    Name = "s3-interface-endpoint"
-  }
-
-  depends_on = [aws_vpc_endpoint.s3_gateway]
+  security_group_ids  = [aws_security_group.sg.id]
+  private_dns_enabled = true
 }
 
-# Generate random string for bucket name uniqueness
-resource "random_string" "bucket_suffix" {
-  length  = 8
-  special = false
-  upper   = false
+# IAM role
+resource "aws_iam_role" "role" {
+  name = "test-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
 }
 
-# Demo S3 bucket to test endpoint access
-resource "aws_s3_bucket" "demo_bucket" {
-bucket        = "demo-endpoint-${random_string.bucket_suffix.result}"
-  force_destroy = true 
+# Simple policy with extended permissions for Secrets Manager
+resource "aws_iam_policy" "policy" {
+  name = "test-policy"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:TagResource"
+      ]
+      Resource = "*"
+    }]
+  })
 }
 
-
-
-# Sample file in S3 to test access
-resource "aws_s3_object" "demo_file" {
-  bucket       = aws_s3_bucket.demo_bucket.id
-  key          = "hello.txt"
-  content      = "Hello from S3 via Interface Endpoint!"
-  content_type = "text/plain"
+resource "aws_iam_role_policy_attachment" "attach" {
+  role       = aws_iam_role.role.name
+  policy_arn = aws_iam_policy.policy.arn
 }
 
-# EC2 Instance in private subnet
-# -----------------------------------------------------------------------------
-# This instance:
-# 1. Has NO internet access (private subnet)
-# 2. CAN access S3 through VPC endpoint
-# 3. Uses standard S3 endpoints (due to private DNS)
-# 4. Is completely isolated from internet
-resource "aws_instance" "test_instance" {
-  ami           = "ami-0c1638aa346a43fe8"
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.private.id
+resource "aws_iam_instance_profile" "profile" {
+  name = "test-profile"
+  role = aws_iam_role.role.name
+}
 
-  vpc_security_group_ids = [aws_security_group.endpoint_sg.id]
+# EC2 Instance
+resource "aws_instance" "instance" {
+  ami                    = "ami-0c1638aa346a43fe8"
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.private.id
+  iam_instance_profile   = aws_iam_instance_profile.profile.name
+  vpc_security_group_ids = [aws_security_group.sg.id]
 
-  # The user data script demonstrates endpoint access:
-  # - AWS CLI will use the VPC endpoint automatically
-  # - No special configuration needed due to private DNS
   user_data = <<-EOF
               #!/bin/bash
-              dnf update -y
+              exec > >(tee /dev/console) 2>&1  # Force output to serial console
+              set -x  # Enable command tracing
+
+              echo "Installing AWS CLI"
               dnf install -y awscli
-              # Test S3 access through VPC endpoint
-              # This will work despite having no internet access
-              aws s3 ls
+
+              export AWS_REGION="ap-northeast-1"  # Ensure CLI uses correct region
+
+              echo "Creating Secrets Manager secret..."
+              aws secretsmanager create-secret \
+                --name "endpoint-validation-secret" \
+                --secret-string "Created from private instance via VPC endpoint"
+
+              echo "Secret creation complete"
               EOF
-
-  tags = {
-    Name = "endpoint-test-instance"
-  }
-}
-
-# Output EC2 instance private IP
-output "instance_private_ip" {
-  value = aws_instance.test_instance.private_ip
-}
-
-# Output generated S3 bucket name
-output "bucket_name" {
-  value = aws_s3_bucket.demo_bucket.id
 }

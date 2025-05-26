@@ -155,10 +155,10 @@ _The EC2 instance will receive a public IP if the subnet is configured correctly
    ```
    _You should see the nginx welcome page._
 3. **Test SSH Access**  
-   Ensure you have the `MainKey.pem` file:
+   Ensure you have the `path/to/keypair/pem/file` file:
    ```bash
-   chmod 400 MainKey.pem
-   ssh -i MainKey.pem ec2-user@<public-ip>
+   chmod 400 path/to/keypair/pem/file
+   ssh -i path/to/keypair/pem/file ec2-user@<public-ip>
    ```
    _If your IP is allowed in SG and NACL, you will connect. If not, connection times out._
 
@@ -169,8 +169,8 @@ _The EC2 instance will receive a public IP if the subnet is configured correctly
 Create once before launching EC2:
 
 ```bash
-aws ec2 create-key-pair --key-name MainKey --query 'KeyMaterial' --output text > MainKey.pem
-chmod 400 MainKey.pem
+aws ec2 create-key-pair --key-name MainKey --query 'KeyMaterial' --output text > path/to/keypair/pem/file
+chmod 400 path/to/keypair/pem/file
 ```
 
 ---

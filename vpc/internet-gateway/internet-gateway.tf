@@ -139,7 +139,7 @@ resource "aws_instance" "web_instance" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.public_subnet.id
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
-  key_name              = "MainKey"  # Using existing key pair that matches MainKey.pem
+  key_name              = "MainKey"  # Using existing key pair that was created and saved to path/to/keypair/pem/file
 
   user_data = <<-EOF
               #!/bin/bash
@@ -168,5 +168,5 @@ output "website_url" {
 
 # Output SSH command
 output "ssh_command" {
-  value = "ssh -i MainKey.pem ec2-user@${aws_instance.web_instance.public_ip}"
+  value = "ssh -i  path/to/keypair/pem/file ec2-user@${aws_instance.web_instance.public_ip}"
 }

@@ -18,6 +18,7 @@ resource "aws_security_group" "sg_server" {
   description = "Allow ICMP and HTTPS for SSM"
   vpc_id      = aws_vpc.vpc_server.id
 
+  # from ping from other VPC
   ingress {
     from_port   = -1
     to_port     = -1
@@ -25,6 +26,7 @@ resource "aws_security_group" "sg_server" {
     cidr_blocks = ["10.20.0.0/16"]
   }
 
+  # for ssm
   ingress {
     from_port   = 443
     to_port     = 443
@@ -32,12 +34,15 @@ resource "aws_security_group" "sg_server" {
     cidr_blocks = [aws_vpc.vpc_server.cidr_block]
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # No explicit egress block
+  # Egress rules are automatically created to allow all outbound traffic
+
+  # egress {
+  #   from_port   = 0
+  #   to_port     = 0
+  #   protocol    = "-1"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   tags = {
     Name = "sg_server"

@@ -32,12 +32,16 @@ resource "aws_security_group" "sg_website" {
     cidr_blocks = [aws_vpc.vpc_website.cidr_block]
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+
+  # No explicit egress block
+  # Egress rules are automatically created to allow all outbound traffic
+
+  # egress {
+  #   from_port   = 0
+  #   to_port     = 0
+  #   protocol    = "-1"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   tags = {
     Name = "sg_website"

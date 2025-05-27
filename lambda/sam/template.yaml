@@ -49,7 +49,7 @@ Resources:
     Properties:
       CodeUri: function/
       Handler: function.lambda_handler
-      Runtime: python3.9
+      Runtime: python3.12
       Events:
         Api:
           Type: Api

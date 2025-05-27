@@ -21,10 +21,15 @@
 #    curl <API Gateway endpoint URL>
 #
 # To destroy/cleanup:
-# 1. Delete the stack:
+# 1. Delete the stack using SAM:
 #    sam delete
 #    - Are you sure you want to delete the stack? Y
 #    - Are you sure you want to delete the bucket? Y
+#
+# 2. Additionally, make sure to delete the CloudFormation stack:
+#    aws cloudformation delete-stack --stack-name aws-sam-cli-managed-default
+#
+# Note: Both steps are necessary for complete cleanup
 
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31

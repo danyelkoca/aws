@@ -1,13 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Simple SAM template with a Python Lambda function
+Description: Simple SAM template with a Python Lambda function (ZIP implementation)
 Resources:
-  SimpleFunction:
+  MyOneandOnlyFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: SimpleFunction
-      Handler: function.lambda_handler
-      Runtime: python3.9
+      CodeUri: MyOneandOnlyFunction
+      Handler: app.lambda_handler
+      Runtime: python3.12
       Events:
         Api:
           Type: Api
@@ -15,7 +15,7 @@ Resources:
             Path: /hello
             Method: get
     Metadata:
-      SamResourceId: SimpleFunction
+      SamResourceId: MyOneandOnlyFunction
 Outputs:
   ApiEndpoint:
     Description: API Gateway endpoint URL

@@ -67,5 +67,25 @@
   "workbench.editorAssociations": {
     "*.copilotmd": "vscode.markdown.preview.editor",
     "{git,gitlens,git-graph}:/**/*.{md,csv,svg}": "default"
-  }
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/aws/serverless-application-model/main/samtranslator/schema/schema.json": [
+      "template.yaml",
+      "**/template.yaml"
+    ]
+  },
+  "yaml.validate": true,
+  "yaml.customTags": [
+    "!Ref",
+    "!Sub",
+    "!ImportValue",
+    "!GetAtt",
+    "!Join",
+    "!Select",
+    "!Split",
+    "!FindInMap"
+  ]
 }

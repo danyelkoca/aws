@@ -1,0 +1,63 @@
+# Project Setup:
+# 1. Create function folder and Lambda handler:
+#    mkdir function
+#    Create file: function/function.py with content:
+#    ```
+#    import json
+#    def lambda_handler(event, context):
+#        return {
+#            "statusCode": 200,
+#            "body": json.dumps("Hello from Lambda!")
+#        }
+#    ```
+#
+# Deployment Steps:
+# 1. Install AWS SAM CLI if not installed:
+#    brew install aws-sam-cli
+#
+# 2. Configure AWS credentials:
+#    aws configure
+#
+# 3. Build the application:
+#    sam build
+#
+# 4. Deploy the application:
+#    sam deploy --guided
+#    - Stack Name: sam-app (or your preferred name)
+#    - AWS Region: ap-northeast-1
+#    - Confirm changes before deploy: Y
+#    - Allow SAM CLI IAM role creation: Y
+#    - Disable rollback: N
+#    - Save arguments to configuration file: Y
+#
+# 5. Test the API:
+#    curl <API Gateway endpoint URL>
+#
+# To destroy/cleanup:
+# 1. Delete the stack:
+#    sam delete
+#    - Are you sure you want to delete the stack? Y
+#    - Are you sure you want to delete the bucket? Y
+
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Simple SAM template with a Python Lambda function
+
+Resources:
+  SimpleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: function/
+      Handler: function.lambda_handler
+      Runtime: python3.9
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"

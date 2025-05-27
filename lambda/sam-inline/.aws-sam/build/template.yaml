@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Simple SAM template with an inline Python Lambda function
+Resources:
+  SimpleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      InlineCode: "import json\ndef lambda_handler(event, context):\n    return {\n\
+        \        \"statusCode\": 200,\n        \"body\": json.dumps(\"Hello from Lambda!\"\
+        )\n    }\n"
+      Handler: index.lambda_handler
+      Runtime: python3.12
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello

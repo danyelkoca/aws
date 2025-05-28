@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: "AWS::Serverless-2016-10-31"
+Description: SAM template for Container Lambda with Faker
+
+Resources:
+  FakeDataFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      MemorySize: 128
+      Timeout: 30
+      Architectures: [arm64]
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /generate
+            Method: get
+    Metadata:
+      DockerTag: python3.12-v1
+      Dockerfile: Dockerfile
+      DockerContext: .
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/generate"

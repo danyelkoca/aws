@@ -1,8 +1,8 @@
 # AWS Solutions Architect Professional (SAP-C02) Study Guide
 
-This repository contains code and notes created while following [Andrew Brown's AWS Solutions Architect Professional certification course](https://www.youtube.com/watch?v=hyEw7dQ9-JE).
+This repository contains my personal code examples and study notes for the AWS Solutions Architect Professional certification exam.
 
-## Course Overview
+## Overview
 
 The AWS Solutions Architect Professional certification validates advanced knowledge in:
 
@@ -106,7 +106,8 @@ The project includes several development tools:
 ## Resources
 
 - [AWS Documentation](https://docs.aws.amazon.com/)
-- [Youtube Video](https://www.youtube.com/watch?v=hyEw7dQ9-JE)
+- [AWS Whitepapers](https://aws.amazon.com/whitepapers)
+- [AWS Architecture Center](https://aws.amazon.com/architecture/)
 
 ## Enable S3 Auto prompt
 

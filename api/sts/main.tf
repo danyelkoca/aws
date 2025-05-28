@@ -20,15 +20,15 @@ resource "aws_s3_bucket" "example_bucket" {
 # Add a hello.txt object to the S3 bucket
 resource "aws_s3_object" "hello_txt" {
   bucket  = aws_s3_bucket.example_bucket.bucket # Reference the S3 bucket
-  key     = "hello.txt"                       # Name of the object
-  content = "Hello, world!"                   # Content of the object
+  key     = "hello.txt"                         # Name of the object
+  content = "Hello, world!"                     # Content of the object
 }
 
 # IAM Policy: Read-only Access to S3
 # Define the policy document granting read-only access to the S3 bucket
 data "aws_iam_policy_document" "readonly_policy" {
   statement {
-    actions   = ["s3:GetObject", "s3:ListBucket"]                                       # Actions allowed by the policy
+    actions   = ["s3:GetObject", "s3:ListBucket"]                                           # Actions allowed by the policy
     resources = [aws_s3_bucket.example_bucket.arn, "${aws_s3_bucket.example_bucket.arn}/*"] # Resources the policy applies to
   }
 }

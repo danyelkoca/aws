@@ -69,7 +69,7 @@ resource "aws_ram_resource_share" "vpc_share" {
 
 # Associate the principal (target AWS account) with the resource share
 resource "aws_ram_principal_association" "principal" {
-  principal          = "353334976408" # Replace with target AWS account ID
+  principal          = "<ACCOUNT_ID>" # Replace with target AWS account ID
   resource_share_arn = aws_ram_resource_share.vpc_share.arn
 }
 

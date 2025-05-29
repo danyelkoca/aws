@@ -1,178 +1,91 @@
 # WIP
 
-# Configure the AWS Provider to use Tokyo region
+# Configure the AWS Provider
 provider "aws" {
   region = "ap-northeast-1"
 }
 
-# Create a Virtual Private Cloud (VPC)
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = "CountryBlockVPC"
+# -----------------------------------------------------------------------------
+# Geo-blocking Options in AWS:
+#
+# 1. CloudFront Geo-restriction (Simple, Cost-effective)
+#    - Included in CloudFront pricing
+#    - Country-level blocking only
+#    - Returns 403 error for blocked countries
+#    - Cannot combine with other criteria
+#    - Good for simple country blocking needs
+#
+# 2. WAF Geo-match (Advanced, More Expensive)
+#    - Additional WAF pricing applies
+#    - Can combine with other WAF rules (IP, rate limiting, etc.)
+#    - More control over response
+#    - Can apply to ALB, API Gateway, AppSync, etc.
+#    - Better for complex security requirements
+# -----------------------------------------------------------------------------
+
+# Create S3 bucket
+resource "aws_s3_bucket" "website" {
+  bucket_prefix = "country-block-demo-"
+}
+
+# Enable website hosting
+resource "aws_s3_bucket_website_configuration" "website" {
+  bucket = aws_s3_bucket.website.id
+
+  index_document {
+    suffix = "index.html"
   }
 }
 
-# Create a public subnet within the VPC in Tokyo Availability Zone
-resource "aws_subnet" "main" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "ap-northeast-1a"
-  map_public_ip_on_launch = true
-  tags = {
-    Name = "CountryBlockSubnet"
-  }
+# Upload index.html to the bucket
+resource "aws_s3_object" "index" {
+  bucket       = aws_s3_bucket.website.id
+  key          = "index.html"
+  content      = <<EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CloudFront Geo-blocking Demo</title>
+</head>
+<body>
+    <h1>Welcome to CloudFront Geo-blocking Demo</h1>
+    <p>This page is served through CloudFront with geo-blocking enabled.</p>
+    <p>Access is blocked for visitors from China (CN) and Russia (RU).</p>
+</body>
+</html>
+EOF
+  content_type = "text/html"
 }
 
-# Create and attach an Internet Gateway to allow outbound internet access
-resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main.id
-  tags = {
-    Name = "CountryBlockIGW"
-  }
+# Create Origin Access Control for CloudFront
+resource "aws_cloudfront_origin_access_control" "oac" {
+  name                              = "s3-oac"
+  description                       = "Origin Access Control for S3"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
-# Create a Route Table with a default route to the Internet Gateway
-resource "aws_route_table" "main" {
-  vpc_id = aws_vpc.main.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id
-  }
-  tags = {
-    Name = "CountryBlockRT"
-  }
-}
-
-# Associate the Route Table with the subnet
-resource "aws_route_table_association" "main" {
-  subnet_id      = aws_subnet.main.id
-  route_table_id = aws_route_table.main.id
-}
-
-# Create a Security Group to allow HTTP (port 80) traffic
-resource "aws_security_group" "web" {
-  name        = "web-sg"
-  description = "Allow HTTP traffic"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    description = "HTTP from anywhere"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "WebSG"
-  }
-}
-
-# Launch a basic EC2 instance with a public IP and simple HTTP server
-resource "aws_instance" "web" {
-  ami                         = "ami-0c1638aa346a43fe8" # Amazon 2023 AMI in Tokyo
-  instance_type               = "t2.micro"
-  subnet_id                   = aws_subnet.main.id
-  vpc_security_group_ids      = [aws_security_group.web.id]
-  associate_public_ip_address = true
-
-  user_data = <<-EOF
-              #!/bin/bash
-              # Update packages
-              dnf update -y
-
-              # Install nginx
-              dnf install -y nginx
-
-              # Enable and start nginx service
-              systemctl enable nginx
-              systemctl start nginx
-
-              # Create a simple static HTML page
-              echo '<!DOCTYPE html>
-              <html>
-              <head>
-                <title>Welcome</title>
-              </head>
-              <body>
-                <h1>Welcome to Country Block EC2 Instance</h1>
-                <p>This is a simple static HTML page served by Nginx.</p>
-              </body>
-              </html>' > /usr/share/nginx/html/index.html
-              EOF
-
-  tags = {
-    Name = "CountryBlockEC2"
-  }
-}
-
-# Define a Web ACL (WAF) to block requests from China (CN) and Russia (RU)
-resource "aws_wafv2_web_acl" "geo_acl" {
-  name  = "geo-acl"
-  scope = "REGIONAL"
-  default_action {
-    allow {}
-  }
-
-  visibility_config {
-    cloudwatch_metrics_enabled = true
-    metric_name                = "geoBlock"
-    sampled_requests_enabled   = true
-  }
-
-  rule {
-    name     = "BlockCNandRU"
-    priority = 1
-    action {
-      block {}
-    }
-
-    statement {
-      geo_match_statement {
-        country_codes = ["CN", "RU"]
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "blockGeo"
-      sampled_requests_enabled   = true
-    }
-  }
-}
-
-# Create a CloudFront distribution that serves content from EC2 and attaches WAF
+# Create CloudFront distribution
 resource "aws_cloudfront_distribution" "cdn" {
-  origin {
-    domain_name = aws_instance.web.public_dns
-    origin_id   = "EC2Origin"
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
-    }
-  }
-
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
+  comment             = "Geo-blocking demo distribution"
+
+  origin {
+    domain_name              = aws_s3_bucket.website.bucket_regional_domain_name
+    origin_id                = "S3Origin"
+    origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
+  }
 
   default_cache_behavior {
-    target_origin_id       = "EC2Origin"
-    viewer_protocol_policy = "allow-all"
+    target_origin_id       = "S3Origin"
+    viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD"]
     cached_methods  = ["GET", "HEAD"]
+
     forwarded_values {
       query_string = false
       cookies {
@@ -183,70 +96,42 @@ resource "aws_cloudfront_distribution" "cdn" {
 
   restrictions {
     geo_restriction {
-      restriction_type = "none"
+      restriction_type = "blacklist"
+      locations        = ["CN", "RU"]
     }
   }
 
   viewer_certificate {
     cloudfront_default_certificate = true
   }
-
-  web_acl_id = aws_wafv2_web_acl.geo_acl.arn
-
-  tags = {
-    Name = "CountryBlockCDN"
-  }
 }
 
-# Create a Target Group for the ALB to forward traffic to the EC2 instance
-resource "aws_lb_target_group" "web_tg" {
-  name     = "web-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main.id
-
-  health_check {
-    path                = "/"
-    protocol            = "HTTP"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-  }
-
-  tags = {
-    Name = "WebTargetGroup"
-  }
+# Create bucket policy to allow CloudFront access
+resource "aws_s3_bucket_policy" "website" {
+  bucket = aws_s3_bucket.website.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowCloudFrontOAC"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+        Action   = "s3:GetObject"
+        Resource = "${aws_s3_bucket.website.arn}/*"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.cdn.arn
+          }
+        }
+      }
+    ]
+  })
 }
 
-# Create an Application Load Balancer to distribute traffic
-resource "aws_lb" "web_alb" {
-  name               = "web-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.web.id]
-  subnets            = [aws_subnet.main.id]
-
-  tags = {
-    Name = "WebALB"
-  }
-}
-
-# Create a Listener to route HTTP traffic to the Target Group
-resource "aws_lb_listener" "web_listener" {
-  load_balancer_arn = aws_lb.web_alb.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.web_tg.arn
-  }
-}
-
-# Register EC2 instance to the Target Group
-resource "aws_lb_target_group_attachment" "web_attachment" {
-  target_group_arn = aws_lb_target_group.web_tg.arn
-  target_id        = aws_instance.web.id
-  port             = 80
+# Output the CloudFront URL
+output "cloudfront_url" {
+  value       = "https://${aws_cloudfront_distribution.cdn.domain_name}"
+  description = "URL of the CloudFront distribution"
 }

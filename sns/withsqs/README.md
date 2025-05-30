@@ -57,18 +57,21 @@ terraform apply
 ## Testing
 
 1. Send a test message:
+
 ```bash
 # Get and run the publish command
 terraform output publish_message
 ```
 
 2. (Optional) Check message in SQS:
+
 ```bash
 # Get and run the SQS read command
 terraform output read_from_sqs
 ```
 
 3. View processed messages in DynamoDB:
+
 ```bash
 # Get and run the DynamoDB scan command
 terraform output view_saved_messages

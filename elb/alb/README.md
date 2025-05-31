@@ -5,7 +5,9 @@ This project sets up a highly available web infrastructure in AWS using Terrafor
 ## Architecture Overview
 
 ### VPC and Network Setup
-- **VPC**: 
+
+- **VPC**:
+
   - CIDR: 10.0.0.0/16
   - DNS hostnames and DNS support enabled
 
@@ -18,6 +20,7 @@ This project sets up a highly available web infrastructure in AWS using Terrafor
     - Private Subnet 2: 10.0.4.0/24 (ap-northeast-1c)
 
 ### Application Load Balancer (ALB)
+
 - Internet-facing ALB
 - Deployed across two public subnets for high availability
 - HTTP listener on port 80
@@ -25,6 +28,7 @@ This project sets up a highly available web infrastructure in AWS using Terrafor
 - Health checks configured to monitor instance health
 
 ### EC2 Instances
+
 - Two t2.micro instances running Amazon Linux 2023
 - Deployed in private subnets
 - Each instance runs nginx web server
@@ -33,12 +37,15 @@ This project sets up a highly available web infrastructure in AWS using Terrafor
   - Server 2: Green (ap-northeast-1c)
 
 ### NAT Gateway
+
 - Single NAT Gateway in public subnet 1
 - Enables internet access for EC2 instances in private subnets
 - Shares the same public subnet as the ALB
 
 ### Security
-- **EC2 Instances**: 
+
+- **EC2 Instances**:
+
   - Located in private subnets
   - No direct internet access
   - Outbound internet access via NAT Gateway
@@ -49,20 +56,24 @@ This project sets up a highly available web infrastructure in AWS using Terrafor
   - EC2 security group: Allows inbound traffic from ALB
 
 ### Management
+
 - AWS Systems Manager (SSM) enabled for instance management
 - No need for bastion hosts or SSH key pairs
 - IAM roles and instance profiles configured for SSM access
 
 ## File Structure
+
 - `main.tf`: VPC, subnets, NAT Gateway, and EC2 instances
 - `alb.tf`: Application Load Balancer and target group configuration
 - `sg.tf`: Security group definitions
 - `ssm.tf`: Systems Manager IAM roles and policies
 
 ## Outputs
+
 - ALB DNS name for accessing the web servers
 - Instance IDs for SSM session management
 
 ## Environment
+
 - Region: ap-northeast-1 (Tokyo)
 - Availability Zones: ap-northeast-1a and ap-northeast-1c
